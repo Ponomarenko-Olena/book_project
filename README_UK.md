@@ -243,7 +243,7 @@ python manage.py runserver
 Відкрий термінал у директорії проєкту:
 
 ```bash
-cd C:\Users\victo\PycharmProjects\book_project
+cd \book_project
 ```
 
 ### Створення віртуального середовища
