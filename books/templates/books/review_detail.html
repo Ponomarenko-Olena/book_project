@@ -1,0 +1,8 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ review.title|default:review.library_entry.book.title }}{% endblock %}
+{% block topbar_title %}{{ review.title|default:review.library_entry.book.title }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Рецензія</p><h1>{{ review.title|default:review.library_entry.book.title }}</h1></div><div class="action-row"><form method="post" action="{% url 'books:review_toggle_publication' review.pk %}">{% csrf_token %}<button class="btn btn-outline-success" type="submit"><i class="bi bi-globe2"></i><span>Публікація</span></button></form><a class="btn btn-outline-secondary" href="{% url 'books:review_update' review.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:review_delete' review.pk %}">Видалити</a></div></div>
+<p class="text-body-secondary"><a href="{% url 'books:library_detail' review.library_entry.pk %}">{{ review.library_entry.book.title }}</a>{% if review.contains_spoilers %} · містить спойлери{% endif %}{% if review.is_published %} · опубліковано{% endif %}</p>
+<div class="prose">{{ review.text|linebreaks }}</div>
+{% endblock %}

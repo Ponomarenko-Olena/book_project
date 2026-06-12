@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ shelf.name }}{% endblock %}
+{% block topbar_title %}{{ shelf.name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Полиця</p><h1>{{ shelf.name }}</h1></div><div class="action-row"><a class="btn btn-outline-secondary" href="{% url 'books:shelf_update' shelf.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:shelf_delete' shelf.pk %}">Видалити</a></div></div>
+{% if shelf.description %}<div class="prose mb-4">{{ shelf.description|linebreaks }}</div>{% endif %}
+{% if shelf.is_public %}<p><span class="badge text-bg-info">Публічна полиця</span></p>{% endif %}
+<section><div class="section-heading"><h2>Книги на полиці</h2><span>{{ shelf.books_count|default:0 }}</span></div><div class="responsive-grid">{% for entry in shelf.ordered_books %}{% include "books/_entry_card.html" with entry=entry %}{% empty %}<div class="empty-inline">На полиці ще немає книг.</div>{% endfor %}</div></section>
+{% endblock %}

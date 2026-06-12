@@ -1,0 +1,7 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Цитата{% endblock %}
+{% block topbar_title %}Цитата{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Цитата</p><h1>{{ quote.library_entry.book.title }}</h1></div><div class="action-row"><form method="post" action="{% url 'books:quote_toggle_favorite' quote.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn btn-outline-warning" type="submit"><i class="bi bi-star"></i><span>Улюблена</span></button></form><a class="btn btn-outline-secondary" href="{% url 'books:quote_update' quote.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:quote_delete' quote.pk %}">Видалити</a></div></div>
+<section class="quote-detail"><blockquote>{{ quote.text|linebreaks }}</blockquote>{% if quote.page %}<p>Сторінка {{ quote.page }}</p>{% endif %}{% if quote.comment %}<div class="prose mt-3">{{ quote.comment|linebreaks }}</div>{% endif %}</section>
+{% endblock %}

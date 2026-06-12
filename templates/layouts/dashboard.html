@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+<div class="dashboard-shell">
+  <aside class="dashboard-sidebar d-none d-lg-flex">
+    {% include "layouts/_sidebar_nav.html" %}
+  </aside>
+
+  <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="mobileSidebar"
+       aria-labelledby="mobileSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title d-flex align-items-center gap-2" id="mobileSidebarLabel"><img src="{% static 'books/img/bookicon.png' %}" alt="BookS" width="32" height="32" class="site-logo rounded"><span>BookS</span></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрити"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      {% include "layouts/_sidebar_nav.html" %}
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <header class="dashboard-topbar">
+      <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#mobileSidebar" aria-controls="mobileSidebar" aria-label="Відкрити меню">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="topbar-title">{% block topbar_title %}{% block title %}BookS{% endblock %}{% endblock %}</div>
+
+      <form class="topbar-search d-none d-md-flex" method="get" action="{% url 'books:book_list' %}">
+        <label class="visually-hidden" for="topbarSearch">Пошук книг</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input id="topbarSearch" class="form-control" type="search" name="search"
+                 value="{{ request.GET.search|default:'' }}" placeholder="Пошук книг">
+        </div>
+      </form>
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+          <i class="bi bi-person-circle me-1"></i>{{ request.user.username }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'books:profile_edit' %}">Профіль</a></li>
+          <li><a class="dropdown-item" href="{% url 'password_change' %}">Змінити пароль</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button class="dropdown-item text-danger" type="submit">Вийти</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="dashboard-alerts">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрити"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="dashboard-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

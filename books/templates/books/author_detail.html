@@ -1,0 +1,28 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}{{ author.name }}{% endblock %}
+{% block topbar_title %}{{ author.name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">Автор</p><h1>{{ author.name }}</h1></div>
+  {% if request.user.is_staff %}
+  <div class="action-row">
+    <a class="btn btn-outline-secondary" href="{% url 'books:author_update' author.pk %}">Редагувати</a>
+    <a class="btn btn-outline-danger" href="{% url 'books:author_delete' author.pk %}">Видалити</a>
+  </div>
+  {% endif %}
+</div>
+{% if author.biography %}<div class="prose mb-4">{{ author.biography|linebreaks }}</div>{% endif %}
+{% if author.website %}<p><a href="{{ author.website }}" rel="noopener">Сайт автора</a></p>{% endif %}
+<section>
+  <div class="section-heading"><h2>Книги автора</h2><span>{{ author.books_count|default:0 }}</span></div>
+  <div class="responsive-grid books-grid">
+    {% for book in author.ordered_books %}
+    {% include "books/_book_card.html" with book=book %}
+    {% empty %}
+    <div class="empty-inline">Книг цього автора ще немає.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

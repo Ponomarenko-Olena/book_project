@@ -19,3 +19,11 @@ env/
 # ===============================
 __pycache__/
 *.py[cod]
+
+# ===============================
+# Local Django runtime files
+# ===============================
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/

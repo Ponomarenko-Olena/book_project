@@ -1,0 +1,7 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Сесія читання{% endblock %}
+{% block topbar_title %}Сесія читання{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Сесія читання</p><h1>{{ session.library_entry.book.title }}</h1></div><div class="action-row"><a class="btn btn-outline-secondary" href="{% url 'books:reading_session_update' session.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:reading_session_delete' session.pk %}">Видалити</a></div></div>
+<section class="app-card"><dl class="detail-list"><dt>Початок</dt><dd>{{ session.started_at|date:"d.m.Y H:i" }}</dd><dt>Завершення</dt><dd>{{ session.finished_at|date:"d.m.Y H:i"|default:"-" }}</dd><dt>Сторінки</dt><dd>{{ session.start_page|default:"-" }} - {{ session.end_page|default:"-" }}</dd><dt>Прочитано</dt><dd>{{ session.pages_read|default:"-" }}</dd><dt>Тривалість</dt><dd>{{ session.duration|default:"-" }}</dd></dl>{% if session.note %}<div class="prose">{{ session.note|linebreaks }}</div>{% endif %}</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ profile }}{% endblock %}
+{% block topbar_title %}{{ profile }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Профіль</p><h1>{{ profile }}</h1><p class="text-body-secondary">{{ profile.user.username }}</p></div></div>
+{% if profile.bio %}<div class="prose mb-4">{{ profile.bio|linebreaks }}</div>{% endif %}
+<div class="content-grid two-columns">
+  <section><div class="section-heading"><h2>Публічні полиці</h2></div><div class="stack-list">{% for shelf in public_shelves %}<a class="list-row" href="{% url 'books:public_shelf_detail' shelf.pk %}"><span><strong>{{ shelf.name }}</strong><small>{{ shelf.description|truncatechars:80 }}</small></span><span>{{ shelf.public_books_count|default:0 }}</span></a>{% empty %}<div class="empty-inline">Полиць немає.</div>{% endfor %}</div></section>
+  <section><div class="section-heading"><h2>Публічні рецензії</h2></div><div class="stack-list">{% for review in public_reviews %}<a class="list-row" href="{% url 'books:public_review_detail' review.pk %}"><span><strong>{{ review.title|default:review.library_entry.book.title }}</strong><small>{{ review.library_entry.book.title }}</small></span><span>{{ review.updated_at|date:"d.m" }}</span></a>{% empty %}<div class="empty-inline">Рецензій немає.</div>{% endfor %}</div></section>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Моя бібліотека{% endblock %}
+{% block topbar_title %}Моя бібліотека{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">Особиста бібліотека</p><h1>Мої книги</h1></div>
+  <a class="btn btn-primary" href="{% url 'books:library_create' %}"><i class="bi bi-plus-lg"></i><span>Додати книгу</span></a>
+</div>
+<form class="filter-bar" method="get">
+  <input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Пошук у бібліотеці">
+  <select class="form-select" name="status">
+    <option value="">Усі статуси</option>
+    {% for value, label in reading_statuses %}
+    <option value="{{ value }}" {% if active_status == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="format">
+    <option value="">Усі формати</option>
+    {% for value, label in book_formats %}
+    <option value="{{ value }}" {% if active_format == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="tag">
+    <option value="">Усі теги</option>
+    {% for tag in tags %}
+    <option value="{{ tag.pk }}" {% if active_tag_id == tag.pk %}selected{% endif %}>{{ tag.name }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="shelf">
+    <option value="">Усі полиці</option>
+    {% for shelf in shelves %}
+    <option value="{{ shelf.pk }}" {% if active_shelf_id == shelf.pk %}selected{% endif %}>{{ shelf.name }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="ordering">
+    <option value="updated" {% if ordering == "updated" %}selected{% endif %}>Оновлені</option>
+    <option value="title" {% if ordering == "title" %}selected{% endif %}>Назва</option>
+    <option value="-progress" {% if ordering == "-progress" %}selected{% endif %}>Прогрес</option>
+    <option value="-rating" {% if ordering == "-rating" %}selected{% endif %}>Оцінка</option>
+  </select>
+  <button class="btn btn-primary" type="submit">Фільтр</button>
+</form>
+<div class="responsive-grid">
+  {% for entry in page_obj %}
+  {% include "books/_entry_card.html" with entry=entry %}
+  {% empty %}
+  <div class="empty-state"><i class="bi bi-journal-bookmark"></i><h2>Бібліотека порожня</h2><a class="btn btn-primary" href="{% url 'books:library_create' %}">Додати книгу</a></div>
+  {% endfor %}
+</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

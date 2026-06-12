@@ -1,0 +1,90 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}{{ book.title }}{% endblock %}
+{% block topbar_title %}{{ book.title|truncatechars:60 }}{% endblock %}
+
+{% block content %}
+<section class="detail-hero">
+  <div class="detail-cover">
+    {% include "books/includes/book_cover.html" with book=book cover_class="book-cover book-cover-lg" %}
+  </div>
+  <div class="detail-main">
+    <p class="eyebrow">Книга</p>
+    <h1>{{ book.title }}</h1>
+    {% if book.subtitle %}<p class="lead">{{ book.subtitle }}</p>{% endif %}
+    <p class="text-body-secondary">
+      {% for author in book.authors.all %}
+      <a href="{% url 'books:author_detail' author.pk %}">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}
+      {% empty %}Автор не вказаний{% endfor %}
+    </p>
+    <div class="book-badges large">
+      {% if book.published_year %}<span>{{ book.published_year }}</span>{% endif %}
+      {% if book.publisher %}<span>{{ book.publisher }}</span>{% endif %}
+      {% if book.pages %}<span>{{ book.pages }} стор.</span>{% endif %}
+      {% if book.language %}<span>{{ book.language }}</span>{% endif %}
+      {% if book.isbn13 %}<span>ISBN {{ book.isbn13 }}</span>{% endif %}
+    </div>
+    <div class="action-row">
+      {% if request.user.is_authenticated %}
+        {% if library_entry %}
+        <a class="btn btn-primary" href="{% url 'books:library_detail' library_entry.pk %}">У моїй бібліотеці</a>
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'books:library_create_for_book' book.pk %}">Додати до бібліотеки</a>
+        {% endif %}
+        {% if can_manage %}
+        <a class="btn btn-outline-secondary" href="{% url 'books:book_update' book.pk %}"><i class="bi bi-pencil"></i><span>Редагувати</span></a>
+        <a class="btn btn-outline-danger" href="{% url 'books:book_delete' book.pk %}"><i class="bi bi-trash"></i><span>Видалити</span></a>
+        {% endif %}
+      {% else %}
+      <a class="btn btn-primary" href="{% url 'login' %}">Увійти, щоб додати</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if book.description %}
+<section class="mt-4">
+  <h2 class="section-title">Опис</h2>
+  <div class="prose">{{ book.description|linebreaks }}</div>
+</section>
+{% endif %}
+
+<div class="content-grid two-columns mt-4">
+  <section>
+    <h2 class="section-title">Категорії</h2>
+    <div class="d-flex flex-wrap gap-2">
+      {% for category in book.categories.all %}
+      <a class="badge text-bg-secondary text-decoration-none" href="{% url 'books:category_detail' category.pk %}">{{ category.name }}</a>
+      {% empty %}
+      <span class="text-body-secondary">Категорії не вказані.</span>
+      {% endfor %}
+    </div>
+  </section>
+  <section>
+    <h2 class="section-title">Публічні рецензії</h2>
+    <div class="stack-list">
+      {% for entry in book.public_review_entries %}
+      <a class="list-row" href="{% url 'books:public_review_detail' entry.review.pk %}">
+        <span><strong>{{ entry.review.title|default:book.title }}</strong><small>{{ entry.user.username }}</small></span>
+        <span>{{ entry.review.updated_at|date:"d.m.Y" }}</span>
+      </a>
+      {% empty %}
+      <div class="empty-inline">Публічних рецензій ще немає.</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+{% if related_books %}
+<section class="mt-4">
+  <div class="section-heading">
+    <h2>Схожі книги</h2>
+  </div>
+  <div class="responsive-grid books-grid">
+    {% for book in related_books %}
+    {% include "books/_book_card.html" with book=book %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

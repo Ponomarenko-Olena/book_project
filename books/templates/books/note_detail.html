@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ note.title|default:"Нотатка" }}{% endblock %}
+{% block topbar_title %}{{ note.title|default:"Нотатка" }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">{{ note.get_note_type_display }}</p><h1>{{ note.title|default:"Нотатка" }}</h1></div><div class="action-row"><form method="post" action="{% url 'books:note_toggle_pin' note.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn btn-outline-warning" type="submit"><i class="bi bi-pin-angle"></i><span>Закріпити</span></button></form><a class="btn btn-outline-secondary" href="{% url 'books:note_update' note.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:note_delete' note.pk %}">Видалити</a></div></div>
+<p class="text-body-secondary"><a href="{% url 'books:library_detail' note.library_entry.pk %}">{{ note.library_entry.book.title }}</a>{% if note.page %} · сторінка {{ note.page }}{% endif %}</p>
+<div class="prose">{{ note.body|linebreaks }}</div>
+<p class="small text-body-secondary mt-4">Оновлено: {{ note.updated_at|date:"d.m.Y H:i" }}</p>
+{% endblock %}

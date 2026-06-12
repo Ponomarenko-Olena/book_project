@@ -1,0 +1,118 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Дашборд{% endblock %}
+{% block topbar_title %}Дашборд{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Особиста бібліотека</p>
+    <h1>Вітаємо, {{ request.user.username }}</h1>
+  </div>
+  <a class="btn btn-primary" href="{% url 'books:library_create' %}">
+    <i class="bi bi-plus-lg"></i><span>Додати книгу</span>
+  </a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-tile"><span>Усього книг</span><strong>{{ stats.total_books|default:0 }}</strong></div>
+  <div class="stat-tile"><span>Читаю</span><strong>{{ stats.reading|default:0 }}</strong></div>
+  <div class="stat-tile"><span>Прочитано</span><strong>{{ stats.completed|default:0 }}</strong></div>
+  <div class="stat-tile"><span>Улюблені</span><strong>{{ stats.favorites|default:0 }}</strong></div>
+  <div class="stat-tile"><span>Середня оцінка</span><strong>{{ stats.average_rating|default:"-" }}</strong></div>
+  <div class="stat-tile"><span>Сторінок</span><strong>{{ stats.current_pages_total|default:0 }}</strong></div>
+</div>
+
+<div class="content-grid two-columns mt-4">
+  <section>
+    <div class="section-heading">
+      <h2>Зараз читаєте</h2>
+      <a href="{% url 'books:library_list' %}?status=reading">Всі</a>
+    </div>
+    <div class="stack-list">
+      {% for entry in currently_reading %}
+      <a class="list-row" href="{% url 'books:library_detail' entry.pk %}">
+        <span>
+          <strong>{{ entry.book.title }}</strong>
+          <small>{{ entry.get_status_display }}</small>
+        </span>
+        <span>{{ entry.progress_percent }}%</span>
+      </a>
+      {% empty %}
+      <div class="empty-inline">Немає книг у процесі читання.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>Активність за 30 днів</h2>
+      <a href="{% url 'books:reading_session_list' %}">Сесії</a>
+    </div>
+    <div class="stats-grid compact">
+      <div class="stat-tile"><span>Сесій</span><strong>{{ session_stats.sessions_count|default:0 }}</strong></div>
+      <div class="stat-tile"><span>Сторінок</span><strong>{{ session_stats.pages_read|default:0 }}</strong></div>
+    </div>
+    <div class="activity-list">
+      {% for day in reading_activity %}
+      <div class="list-row">
+        <span>{{ day.day|date:"d.m.Y" }}</span>
+        <span>{{ day.sessions_count }} сес., {{ day.pages_read|default:0 }} стор.</span>
+      </div>
+      {% empty %}
+      <div class="empty-inline">Поки немає записаних сесій читання.</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="mt-4">
+  <div class="section-heading">
+    <h2>Нещодавно додані</h2>
+    <a href="{% url 'books:library_list' %}">Бібліотека</a>
+  </div>
+  <div class="responsive-grid">
+    {% for entry in recent_books %}
+    {% include "books/_entry_card.html" with entry=entry %}
+    {% empty %}
+    <div class="empty-inline">Додайте першу книгу до бібліотеки.</div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="content-grid two-columns mt-4">
+  <section>
+    <div class="section-heading">
+      <h2>Останні нотатки</h2>
+      <a href="{% url 'books:note_list' %}">Всі</a>
+    </div>
+    <div class="stack-list">
+      {% for note in recent_notes %}
+      <a class="list-row" href="{% url 'books:note_detail' note.pk %}">
+        <span><strong>{{ note.title|default:"Нотатка без заголовка" }}</strong><small>{{ note.library_entry.book.title }}</small></span>
+        <span>{{ note.updated_at|date:"d.m" }}</span>
+      </a>
+      {% empty %}
+      <div class="empty-inline">Нотаток ще немає.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>Улюблені цитати</h2>
+      <a href="{% url 'books:quote_list' %}?favorite=1">Всі</a>
+    </div>
+    <div class="stack-list">
+      {% for quote in recent_quotes %}
+      <a class="list-row" href="{% url 'books:quote_detail' quote.pk %}">
+        <span><strong>{{ quote.text|truncatechars:80 }}</strong><small>{{ quote.library_entry.book.title }}</small></span>
+        {% if quote.is_favorite %}<i class="bi bi-star-fill text-warning"></i>{% endif %}
+      </a>
+      {% empty %}
+      <div class="empty-inline">Цитат ще немає.</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

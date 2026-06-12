@@ -1,0 +1,3 @@
+{% extends "books/_confirm_delete.html" %}
+{% block delete_title %}Видалити цитату?{% endblock %}
+{% block delete_object %}<strong>{{ quote.text|truncatechars:90 }}</strong>{% endblock %}

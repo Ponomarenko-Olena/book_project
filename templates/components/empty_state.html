@@ -1,0 +1,8 @@
+<div class="empty-state">
+  <i class="bi {{ icon|default:'bi-inbox' }}"></i>
+  <h2>{{ title|default:"Нічого не знайдено" }}</h2>
+  {% if text %}<p>{{ text }}</p>{% endif %}
+  {% if action_url and action_label %}
+  <a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>
+  {% endif %}
+</div>

@@ -1,0 +1,7 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ tag.name }}{% endblock %}
+{% block topbar_title %}{{ tag.name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Тег</p><h1>{{ tag.name }}</h1></div><div class="action-row"><a class="btn btn-outline-secondary" href="{% url 'books:tag_update' tag.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:tag_delete' tag.pk %}">Видалити</a></div></div>
+<section><div class="section-heading"><h2>Книги з тегом</h2><span>{{ tag.books_count|default:0 }}</span></div><div class="responsive-grid">{% for entry in tag.ordered_entries %}{% include "books/_entry_card.html" with entry=entry %}{% empty %}<div class="empty-inline">Книг з цим тегом немає.</div>{% endfor %}</div></section>
+{% endblock %}
