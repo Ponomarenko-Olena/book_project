@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Публічні полиці{% endblock %}
+{% block topbar_title %}Публічні полиці{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Публічне</p><h1>Публічні полиці</h1></div></div>
+<form class="filter-bar compact" method="get"><input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Пошук полиці або користувача"><button class="btn btn-primary" type="submit">Знайти</button></form>
+<div class="responsive-grid">{% for shelf in page_obj %}<article class="app-card"><h2><a href="{% url 'books:public_shelf_detail' shelf.pk %}">{{ shelf.name }}</a></h2><p class="text-body-secondary">{{ shelf.description|truncatechars:140|default:"Опис не додано." }}</p><div class="d-flex justify-content-between"><span>{{ shelf.user.username }}</span><span class="badge text-bg-secondary">{{ shelf.public_books_count|default:0 }} книг</span></div></article>{% empty %}<div class="empty-state"><i class="bi bi-globe2"></i><h2>Публічних полиць немає</h2></div>{% endfor %}</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

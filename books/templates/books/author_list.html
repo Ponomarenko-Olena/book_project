@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Автори{% endblock %}
+{% block topbar_title %}Автори{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">Довідник</p><h1>Автори</h1></div>
+  {% if request.user.is_authenticated %}
+  <a class="btn btn-primary" href="{% url 'books:author_create' %}"><i class="bi bi-plus-lg"></i><span>Новий автор</span></a>
+  {% endif %}
+</div>
+<form class="filter-bar compact" method="get">
+  <input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Пошук автора">
+  <button class="btn btn-primary" type="submit">Знайти</button>
+</form>
+<div class="responsive-grid">
+  {% for author in page_obj %}
+  <article class="app-card">
+    <h2><a href="{% url 'books:author_detail' author.pk %}">{{ author.name }}</a></h2>
+    <p class="text-body-secondary">{{ author.biography|truncatechars:140|default:"Біографію не додано." }}</p>
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="badge text-bg-secondary">{{ author.books_count|default:0 }} книг</span>
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'books:author_detail' author.pk %}">Відкрити</a>
+    </div>
+  </article>
+  {% empty %}
+  <div class="empty-state"><i class="bi bi-people"></i><h2>Авторів не знайдено</h2></div>
+  {% endfor %}
+</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

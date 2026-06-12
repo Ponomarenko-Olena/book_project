@@ -1,0 +1,38 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}{{ category.name }}{% endblock %}
+{% block topbar_title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">Категорія</p><h1>{{ category.name }}</h1></div>
+  {% if request.user.is_authenticated %}
+  <div class="action-row">
+    <a class="btn btn-outline-secondary" href="{% url 'books:category_update' category.pk %}">Редагувати</a>
+    <a class="btn btn-outline-danger" href="{% url 'books:category_delete' category.pk %}">Видалити</a>
+  </div>
+  {% endif %}
+</div>
+{% if category.parent %}<p class="text-body-secondary">Батьківська категорія: <a href="{% url 'books:category_detail' category.parent.pk %}">{{ category.parent.name }}</a></p>{% endif %}
+{% if category.description %}<div class="prose mb-4">{{ category.description|linebreaks }}</div>{% endif %}
+{% if category.children.all %}
+<section class="mb-4">
+  <h2 class="section-title">Підкатегорії</h2>
+  <div class="subitem-list">
+    {% for child in category.children.all %}
+    <a href="{% url 'books:category_detail' child.pk %}">{{ child.name }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+<section>
+  <div class="section-heading"><h2>Книги</h2><span>{{ category.books_count|default:0 }}</span></div>
+  <div class="responsive-grid books-grid">
+    {% for book in category.ordered_books %}
+    {% include "books/_book_card.html" with book=book %}
+    {% empty %}
+    <div class="empty-inline">У цій категорії поки немає книг.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

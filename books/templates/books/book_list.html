@@ -1,0 +1,56 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Каталог книг{% endblock %}
+{% block topbar_title %}Каталог книг{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Каталог</p>
+    <h1>Книги</h1>
+  </div>
+  {% if request.user.is_authenticated %}
+  <a class="btn btn-primary" href="{% url 'books:book_create' %}">
+    <i class="bi bi-plus-lg"></i><span>Нова книга</span>
+  </a>
+  {% endif %}
+</div>
+
+<form class="filter-bar" method="get">
+  <input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Назва, автор, ISBN">
+  <select class="form-select" name="category">
+    <option value="">Усі категорії</option>
+    {% for category in categories %}
+    <option value="{{ category.pk }}" {% if active_category_id == category.pk %}selected{% endif %}>{{ category.name }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="author">
+    <option value="">Усі автори</option>
+    {% for author in authors %}
+    <option value="{{ author.pk }}" {% if active_author_id == author.pk %}selected{% endif %}>{{ author.name }}</option>
+    {% endfor %}
+  </select>
+  <input class="form-control" type="number" name="year" value="{{ active_year|default:'' }}" placeholder="Рік">
+  <input class="form-control" type="text" name="language" value="{{ active_language }}" placeholder="Мова">
+  <select class="form-select" name="ordering">
+    <option value="title" {% if ordering == "title" %}selected{% endif %}>Назва А-Я</option>
+    <option value="-title" {% if ordering == "-title" %}selected{% endif %}>Назва Я-А</option>
+    <option value="-year" {% if ordering == "-year" %}selected{% endif %}>Новіші</option>
+    <option value="year" {% if ordering == "year" %}selected{% endif %}>Старіші</option>
+    <option value="popular" {% if ordering == "popular" %}selected{% endif %}>Популярні</option>
+  </select>
+  <button class="btn btn-primary" type="submit"><i class="bi bi-funnel"></i><span>Фільтр</span></button>
+</form>
+
+<div class="result-summary">{{ page_obj.paginator.count }} книг</div>
+
+<div class="responsive-grid books-grid">
+  {% for book in page_obj %}
+  {% include "books/_book_card.html" with book=book %}
+  {% empty %}
+  <div class="empty-state"><i class="bi bi-search"></i><h2>Книг не знайдено</h2></div>
+  {% endfor %}
+</div>
+
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

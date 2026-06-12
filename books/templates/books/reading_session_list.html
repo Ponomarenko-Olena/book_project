@@ -1,0 +1,10 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Сесії читання{% endblock %}
+{% block topbar_title %}Сесії читання{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Читання</p><h1>Сесії читання</h1></div><a class="btn btn-primary" href="{% url 'books:reading_session_create' %}"><i class="bi bi-plus-lg"></i><span>Нова сесія</span></a></div>
+<div class="stats-grid compact mb-4"><div class="stat-tile"><span>Сесій</span><strong>{{ stats.sessions_count|default:0 }}</strong></div><div class="stat-tile"><span>Сторінок</span><strong>{{ stats.pages_read|default:0 }}</strong></div></div>
+<form class="filter-bar" method="get"><select class="form-select" name="entry"><option value="">Усі книги</option>{% for entry in library_entries %}<option value="{{ entry.pk }}" {% if active_entry_id == entry.pk %}selected{% endif %}>{{ entry.book.title }}</option>{% endfor %}</select><input class="form-control" type="date" name="date_from" value="{{ date_from|default:'' }}"><input class="form-control" type="date" name="date_to" value="{{ date_to|default:'' }}"><button class="btn btn-primary" type="submit">Фільтр</button></form>
+<div class="stack-list">{% for session in page_obj %}<a class="list-row" href="{% url 'books:reading_session_detail' session.pk %}"><span><strong>{{ session.library_entry.book.title }}</strong><small>{{ session.started_at|date:"d.m.Y H:i" }}{% if session.finished_at %} - {{ session.finished_at|date:"d.m.Y H:i" }}{% endif %}</small></span><span>{{ session.pages_read|default:"-" }} стор.</span></a>{% empty %}<div class="empty-state"><i class="bi bi-stopwatch"></i><h2>Сесій не знайдено</h2></div>{% endfor %}</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

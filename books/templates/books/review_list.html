@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Мої рецензії{% endblock %}
+{% block topbar_title %}Мої рецензії{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Читання</p><h1>Мої рецензії</h1></div><a class="btn btn-primary" href="{% url 'books:review_create' %}"><i class="bi bi-plus-lg"></i><span>Нова рецензія</span></a></div>
+<form class="filter-bar compact" method="get"><input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Пошук рецензій"><select class="form-select" name="published"><option value="">Усі</option><option value="1" {% if request.GET.published == "1" %}selected{% endif %}>Опубліковані</option><option value="0" {% if request.GET.published == "0" %}selected{% endif %}>Чернетки</option></select><button class="btn btn-primary" type="submit">Фільтр</button></form>
+<div class="responsive-grid">{% for review in page_obj %}<article class="app-card"><div class="d-flex justify-content-between"><h2><a href="{% url 'books:review_detail' review.pk %}">{{ review.title|default:review.library_entry.book.title }}</a></h2>{% if review.is_published %}<span class="badge text-bg-success">Публічна</span>{% endif %}</div><p class="text-body-secondary">{{ review.text|truncatechars:170 }}</p><small>{{ review.library_entry.book.title }}</small></article>{% empty %}<div class="empty-state"><i class="bi bi-star"></i><h2>Рецензій не знайдено</h2></div>{% endfor %}</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

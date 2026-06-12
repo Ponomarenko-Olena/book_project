@@ -1,0 +1,7 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ bookmark.label|default:"Закладка" }}{% endblock %}
+{% block topbar_title %}{{ bookmark.label|default:"Закладка" }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Закладка</p><h1>{{ bookmark.label|default:"Закладка" }}</h1></div><div class="action-row"><a class="btn btn-outline-secondary" href="{% url 'books:bookmark_update' bookmark.pk %}">Редагувати</a><a class="btn btn-outline-danger" href="{% url 'books:bookmark_delete' bookmark.pk %}">Видалити</a></div></div>
+<section class="app-card"><p><a href="{% url 'books:library_detail' bookmark.library_entry.pk %}">{{ bookmark.library_entry.book.title }}</a></p><p class="display-meta">{% if bookmark.page %}Сторінка {{ bookmark.page }}{% endif %}{% if bookmark.position %}{{ bookmark.position }}{% endif %}</p>{% if bookmark.comment %}<div class="prose">{{ bookmark.comment|linebreaks }}</div>{% endif %}</section>
+{% endblock %}

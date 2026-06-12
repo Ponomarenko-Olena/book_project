@@ -1,0 +1,24 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Підтвердження видалення{% endblock %}
+{% block topbar_title %}Підтвердження видалення{% endblock %}
+
+{% block content %}
+<div class="narrow-page">
+  <section class="danger-panel">
+    <i class="bi bi-exclamation-triangle"></i>
+    <h1>{% block delete_title %}Видалити запис?{% endblock %}</h1>
+    <p>{% block delete_text %}Цю дію не можна скасувати.{% endblock %}</p>
+    <div class="delete-object">
+      {% block delete_object %}{% endblock %}
+    </div>
+    <form method="post" class="d-flex flex-wrap gap-2 justify-content-center">
+      {% csrf_token %}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Скасувати</a>
+      <button class="btn btn-danger" type="submit">
+        <i class="bi bi-trash"></i><span>Видалити</span>
+      </button>
+    </form>
+  </section>
+</div>
+{% endblock %}

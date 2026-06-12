@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+<div class="auth-page container">
+  <section class="auth-panel">
+    <div>
+      <p class="eyebrow">BookS</p>
+      <h1>Створіть акаунт</h1>
+      <p class="text-body-secondary">Зберігайте власну бібліотеку, нотатки, цитати та прогрес читання.</p>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary w-100" type="submit">Зареєструватися</button>
+    </form>
+    <p class="small text-body-secondary mb-0">Вже маєте акаунт? <a href="{% url 'login' %}">Увійдіть</a>.</p>
+  </section>
+</div>
+{% endblock %}

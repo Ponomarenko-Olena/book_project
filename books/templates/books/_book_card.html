@@ -1,0 +1,22 @@
+<article class="book-card h-100">
+  <a class="book-card-cover" href="{% url 'books:book_detail' book.pk %}">
+    {% include "books/includes/book_cover.html" with book=book cover_class="book-cover book-cover-sm" %}
+  </a>
+  <div class="book-card-body">
+    <h3><a href="{% url 'books:book_detail' book.pk %}">{{ book.title }}</a></h3>
+    {% if book.subtitle %}<p class="book-subtitle">{{ book.subtitle|truncatechars:90 }}</p>{% endif %}
+    <div class="book-meta">
+      {% for author in book.authors.all %}
+      <a href="{% url 'books:author_detail' author.pk %}">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}
+      {% empty %}
+      <span>Автор не вказаний</span>
+      {% endfor %}
+    </div>
+    <div class="book-badges">
+      {% if book.published_year %}<span>{{ book.published_year }}</span>{% endif %}
+      {% if book.language %}<span>{{ book.language }}</span>{% endif %}
+      {% if book.pages %}<span>{{ book.pages }} стор.</span>{% endif %}
+      {% if book.library_count %}<span>{{ book.library_count }} у бібліотеках</span>{% endif %}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Публічні рецензії{% endblock %}
+{% block topbar_title %}Публічні рецензії{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Публічне</p><h1>Публічні рецензії</h1></div></div>
+<form class="filter-bar compact" method="get"><input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Пошук рецензій"><button class="btn btn-primary" type="submit">Знайти</button></form>
+<div class="responsive-grid">{% for review in page_obj %}<article class="app-card"><h2><a href="{% url 'books:public_review_detail' review.pk %}">{{ review.title|default:review.library_entry.book.title }}</a></h2><p class="text-body-secondary">{{ review.text|truncatechars:180 }}</p><div class="d-flex justify-content-between small"><span>{{ review.library_entry.book.title }}</span><span>{{ review.library_entry.user.username }}</span></div></article>{% empty %}<div class="empty-state"><i class="bi bi-chat-square-text"></i><h2>Публічних рецензій не знайдено</h2></div>{% endfor %}</div>
+{% include "components/pagination.html" with page_obj=page_obj %}
+{% endblock %}

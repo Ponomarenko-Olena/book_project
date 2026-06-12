@@ -1,0 +1,10 @@
+{% load book_extras %}
+{% book_cover book as cover_src %}
+{% if cover_src %}
+<img
+    src="{{ cover_src }}"
+    alt="Обкладинка книги {{ book.title|default:'без назви' }}"
+    class="{{ cover_class|default:'book-cover' }} img-fluid"
+    loading="lazy"
+>
+{% endif %}

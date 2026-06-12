@@ -1,0 +1,3 @@
+{% extends "books/_confirm_delete.html" %}
+{% block delete_title %}Видалити сесію читання?{% endblock %}
+{% block delete_object %}<strong>{{ session.library_entry.book.title }}</strong><br>{{ session.started_at|date:"d.m.Y H:i" }}{% endblock %}

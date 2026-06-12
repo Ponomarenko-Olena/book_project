@@ -1,0 +1,125 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}{{ entry.book.title }}{% endblock %}
+{% block topbar_title %}{{ entry.book.title|truncatechars:60 }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">Моя бібліотека</p><h1>{{ entry.book.title }}</h1></div>
+  <div class="action-row">
+    <a class="btn btn-outline-secondary" href="{% url 'books:library_update' entry.pk %}">Редагувати</a>
+    <a class="btn btn-outline-danger" href="{% url 'books:library_delete' entry.pk %}">Видалити</a>
+  </div>
+</div>
+<div class="content-grid detail-layout">
+  <section class="app-card">
+    <h2>Стан читання</h2>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <span class="badge text-bg-secondary">{{ entry.get_status_display }}</span>
+      <span class="badge text-bg-dark">{{ entry.get_book_format_display }}</span>
+      <span class="badge text-bg-info">{{ entry.get_visibility_display }}</span>
+      {% if entry.is_favorite %}<span class="badge text-bg-danger">Улюблена</span>{% endif %}
+      {% if entry.is_owned %}<span class="badge text-bg-success">У власності</span>{% endif %}
+    </div>
+    <div class="progress reading-progress mb-2"><div class="progress-bar" style="width: {{ entry.progress_percent }}%"></div></div>
+    <p class="text-body-secondary">{{ entry.current_page }}{% if entry.book.pages %} / {{ entry.book.pages }}{% endif %} сторінок, {{ entry.progress_percent }}%</p>
+    <form method="post" action="{% url 'books:library_set_progress' entry.pk %}" class="inline-form">
+      {% csrf_token %}
+      <input class="form-control" type="number" min="0" name="current_page" value="{{ entry.current_page }}">
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button class="btn btn-outline-primary" type="submit">Оновити прогрес</button>
+    </form>
+    <div class="action-row mt-3">
+      <form method="post" action="{% url 'books:library_toggle_favorite' entry.pk %}">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-heart"></i><span>Улюблена</span></button>
+      </form>
+      <form method="post" action="{% url 'books:library_mark_completed' entry.pk %}">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="btn btn-outline-success" type="submit"><i class="bi bi-check2-circle"></i><span>Прочитано</span></button>
+      </form>
+    </div>
+  </section>
+  <section class="app-card">
+    <h2>Книга</h2>
+    <p><a href="{% url 'books:book_detail' entry.book.pk %}">{{ entry.book.title }}</a></p>
+    <p class="text-body-secondary">
+      {% for author in entry.book.authors.all %}{{ author.name }}{% if not forloop.last %}, {% endif %}{% empty %}Автор не вказаний{% endfor %}
+    </p>
+    {% if entry.rating %}<p>Оцінка: <strong>{{ entry.rating }}/5</strong></p>{% endif %}
+    {% if entry.started_at %}<p>Початок: {{ entry.started_at|date:"d.m.Y" }}</p>{% endif %}
+    {% if entry.finished_at %}<p>Завершення: {{ entry.finished_at|date:"d.m.Y" }}</p>{% endif %}
+    {% if entry.tags.all %}
+    <div class="d-flex flex-wrap gap-1">{% for tag in entry.tags.all %}<span class="badge tag-badge">{{ tag.name }}</span>{% endfor %}</div>
+    {% endif %}
+  </section>
+</div>
+
+<div class="content-grid two-columns mt-4">
+  <section>
+    <div class="section-heading"><h2>Нотатки</h2><a href="{% url 'books:note_create_for_entry' entry.pk %}">Нова</a></div>
+    <div class="stack-list">
+      {% for note in entry.ordered_notes %}
+      <a class="list-row" href="{% url 'books:note_detail' note.pk %}"><span><strong>{{ note.title|default:"Нотатка" }}</strong><small>{{ note.body|truncatechars:80 }}</small></span>{% if note.is_pinned %}<i class="bi bi-pin-angle-fill"></i>{% endif %}</a>
+      {% empty %}<div class="empty-inline">Нотаток немає.</div>{% endfor %}
+    </div>
+  </section>
+  <section>
+    <div class="section-heading"><h2>Закладки</h2><a href="{% url 'books:bookmark_create_for_entry' entry.pk %}">Нова</a></div>
+    <div class="stack-list">
+      {% for bookmark in entry.ordered_bookmarks %}
+      <a class="list-row" href="{% url 'books:bookmark_detail' bookmark.pk %}"><span><strong>{{ bookmark.label|default:"Закладка" }}</strong><small>{{ bookmark.comment|truncatechars:80 }}</small></span><span>{% if bookmark.page %}с. {{ bookmark.page }}{% else %}{{ bookmark.position }}{% endif %}</span></a>
+      {% empty %}<div class="empty-inline">Закладок немає.</div>{% endfor %}
+    </div>
+  </section>
+</div>
+
+<div class="content-grid two-columns mt-4">
+  <section>
+    <div class="section-heading"><h2>Цитати</h2><a href="{% url 'books:quote_create_for_entry' entry.pk %}">Нова</a></div>
+    <div class="stack-list">
+      {% for quote in entry.ordered_quotes %}
+      <a class="list-row" href="{% url 'books:quote_detail' quote.pk %}"><span><strong>{{ quote.text|truncatechars:90 }}</strong><small>{{ quote.comment|truncatechars:70 }}</small></span>{% if quote.is_favorite %}<i class="bi bi-star-fill text-warning"></i>{% endif %}</a>
+      {% empty %}<div class="empty-inline">Цитат немає.</div>{% endfor %}
+    </div>
+  </section>
+  <section>
+    <div class="section-heading"><h2>Сесії читання</h2><a href="{% url 'books:reading_session_create_for_entry' entry.pk %}">Нова</a></div>
+    <div class="stack-list">
+      {% for session in entry.ordered_sessions %}
+      <a class="list-row" href="{% url 'books:reading_session_detail' session.pk %}"><span><strong>{{ session.started_at|date:"d.m.Y H:i" }}</strong><small>{{ session.note|truncatechars:80 }}</small></span><span>{{ session.pages_read|default:"-" }} стор.</span></a>
+      {% empty %}<div class="empty-inline">Сесій немає.</div>{% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="mt-4">
+  <div class="section-heading"><h2>Швидке додавання</h2></div>
+  <div class="content-grid three-columns">
+    <details class="app-card">
+      <summary>Нотатка</summary>
+      <form method="post" action="{% url 'books:note_create_for_entry' entry.pk %}" class="quick-form">
+        {% csrf_token %}
+        {{ note_form.as_p }}
+        <button class="btn btn-primary" type="submit">Зберегти нотатку</button>
+      </form>
+    </details>
+    <details class="app-card">
+      <summary>Закладка</summary>
+      <form method="post" action="{% url 'books:bookmark_create_for_entry' entry.pk %}" class="quick-form">
+        {% csrf_token %}
+        {{ bookmark_form.as_p }}
+        <button class="btn btn-primary" type="submit">Зберегти закладку</button>
+      </form>
+    </details>
+    <details class="app-card">
+      <summary>Цитата</summary>
+      <form method="post" action="{% url 'books:quote_create_for_entry' entry.pk %}" class="quick-form">
+        {% csrf_token %}
+        {{ quote_form.as_p }}
+        <button class="btn btn-primary" type="submit">Зберегти цитату</button>
+      </form>
+    </details>
+  </div>
+</section>
+{% endblock %}

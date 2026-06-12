@@ -1,0 +1,83 @@
+{% load static %}
+<a class="sidebar-brand" href="{% url 'books:dashboard' %}">
+  <img src="{% static 'books/img/bookicon.png' %}" alt="BookS" width="38" height="38" class="site-logo rounded">
+  <span>BookS</span>
+</a>
+
+<div class="sidebar-scroll">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Огляд</div>
+    <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+       href="{% url 'books:dashboard' %}">
+      <i class="bi bi-speedometer2"></i><span>Дашборд</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'book_list' or request.resolver_match.url_name == 'book_main_page' %}active{% endif %}"
+       href="{% url 'books:book_list' %}">
+      <i class="bi bi-search"></i><span>Каталог книг</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'library_list' %}active{% endif %}"
+       href="{% url 'books:library_list' %}">
+      <i class="bi bi-journal-bookmark"></i><span>Моя бібліотека</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Читання</div>
+    <a class="nav-link {% if request.resolver_match.url_name == 'note_list' %}active{% endif %}"
+       href="{% url 'books:note_list' %}">
+      <i class="bi bi-stickies"></i><span>Нотатки</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'bookmark_list' %}active{% endif %}"
+       href="{% url 'books:bookmark_list' %}">
+      <i class="bi bi-bookmark"></i><span>Закладки</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'quote_list' %}active{% endif %}"
+       href="{% url 'books:quote_list' %}">
+      <i class="bi bi-quote"></i><span>Цитати</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'reading_session_list' %}active{% endif %}"
+       href="{% url 'books:reading_session_list' %}">
+      <i class="bi bi-stopwatch"></i><span>Сесії читання</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'review_list' %}active{% endif %}"
+       href="{% url 'books:review_list' %}">
+      <i class="bi bi-star"></i><span>Мої рецензії</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Організація</div>
+    <a class="nav-link {% if request.resolver_match.url_name == 'shelf_list' %}active{% endif %}"
+       href="{% url 'books:shelf_list' %}">
+      <i class="bi bi-bookshelf"></i><span>Полиці</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'tag_list' %}active{% endif %}"
+       href="{% url 'books:tag_list' %}">
+      <i class="bi bi-tags"></i><span>Теги</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Довідники</div>
+    <a class="nav-link {% if request.resolver_match.url_name == 'author_list' %}active{% endif %}"
+       href="{% url 'books:author_list' %}">
+      <i class="bi bi-people"></i><span>Автори</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}"
+       href="{% url 'books:category_list' %}">
+      <i class="bi bi-diagram-3"></i><span>Категорії</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Публічне</div>
+    <a class="nav-link {% if request.resolver_match.url_name == 'public_shelf_list' %}active{% endif %}"
+       href="{% url 'books:public_shelf_list' %}">
+      <i class="bi bi-globe2"></i><span>Публічні полиці</span>
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'public_review_list' %}active{% endif %}"
+       href="{% url 'books:public_review_list' %}">
+      <i class="bi bi-chat-square-text"></i><span>Публічні рецензії</span>
+    </a>
+  </div>
+</div>

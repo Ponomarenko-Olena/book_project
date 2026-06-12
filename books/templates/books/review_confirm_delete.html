@@ -1,0 +1,3 @@
+{% extends "books/_confirm_delete.html" %}
+{% block delete_title %}Видалити рецензію?{% endblock %}
+{% block delete_object %}<strong>{{ review.title|default:review.library_entry.book.title }}</strong>{% endblock %}

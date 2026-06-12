@@ -1,0 +1,36 @@
+<article class="entry-card h-100">
+  <a class="entry-cover" href="{% url 'books:library_detail' entry.pk %}">
+    {% include "books/includes/book_cover.html" with book=entry.book cover_class="book-cover book-cover-sm" %}
+  </a>
+  <div class="entry-body">
+    <div class="d-flex justify-content-between gap-2">
+      <h3><a href="{% url 'books:library_detail' entry.pk %}">{{ entry.book.title }}</a></h3>
+      {% if entry.is_favorite %}<i class="bi bi-heart-fill text-danger" title="Улюблена"></i>{% endif %}
+    </div>
+    <p class="small text-body-secondary mb-2">
+      {% for author in entry.book.authors.all %}
+      {{ author.name }}{% if not forloop.last %}, {% endif %}
+      {% empty %}Автор не вказаний{% endfor %}
+    </p>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <span class="badge text-bg-secondary">{{ entry.get_status_display }}</span>
+      <span class="badge text-bg-dark">{{ entry.get_book_format_display }}</span>
+      {% if entry.rating %}<span class="badge text-bg-warning text-dark">{{ entry.rating }}/5</span>{% endif %}
+    </div>
+    <div class="progress reading-progress" role="progressbar" aria-valuenow="{{ entry.progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar" style="width: {{ entry.progress_percent }}%"></div>
+    </div>
+    <div class="d-flex justify-content-between small text-body-secondary mt-1">
+      <span>{{ entry.current_page }}{% if entry.book.pages %} / {{ entry.book.pages }}{% endif %} стор.</span>
+      <span>{{ entry.progress_percent }}%</span>
+    </div>
+    {% if entry.tags.all %}
+    <div class="d-flex flex-wrap gap-1 mt-3">
+      {% for tag in entry.tags.all %}
+      <a class="badge tag-badge text-decoration-none" href="{% url 'books:library_list' %}?tag={{ tag.pk }}"
+         {% if tag.color %}style="--tag-color: {{ tag.color }}"{% endif %}>{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</article>

@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title|default:"Форма" }}{% endblock %}
+{% block topbar_title %}{{ title|default:"Форма" }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Форма</p>
+    <h1>{{ title|default:"Форма" }}</h1>
+  </div>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">
+    <i class="bi bi-arrow-left"></i><span>Назад</span>
+  </a>
+</div>
+
+{% if selected_book %}
+<div class="alert alert-info">
+  Книга: <strong>{{ selected_book.title }}</strong>
+</div>
+{% endif %}
+{% if entry %}
+<div class="alert alert-info">
+  Книга: <strong>{{ entry.book.title }}</strong>
+</div>
+{% endif %}
+
+<section class="form-panel">
+  {% crispy form %}
+</section>
+{% endblock %}

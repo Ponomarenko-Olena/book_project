@@ -1,0 +1,8 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ review.title|default:review.library_entry.book.title }}{% endblock %}
+{% block topbar_title %}Публічна рецензія{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Публічна рецензія</p><h1>{{ review.title|default:review.library_entry.book.title }}</h1><p class="text-body-secondary">{{ review.library_entry.user.username }} · <a href="{% url 'books:book_detail' review.library_entry.book.pk %}">{{ review.library_entry.book.title }}</a></p></div></div>
+{% if review.contains_spoilers %}<div class="alert alert-warning">Рецензія містить спойлери.</div>{% endif %}
+<div class="prose">{{ review.text|linebreaks }}</div>
+{% endblock %}

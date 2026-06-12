@@ -1,0 +1,8 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}{{ shelf.name }}{% endblock %}
+{% block topbar_title %}{{ shelf.name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Публічна полиця</p><h1>{{ shelf.name }}</h1><p class="text-body-secondary">{{ shelf.user.username }}</p></div></div>
+{% if shelf.description %}<div class="prose mb-4">{{ shelf.description|linebreaks }}</div>{% endif %}
+<section><div class="section-heading"><h2>Книги</h2><span>{{ shelf.public_books_count|default:0 }}</span></div><div class="responsive-grid">{% for entry in shelf.public_books %}{% include "books/_entry_card.html" with entry=entry %}{% empty %}<div class="empty-inline">Публічних книг на полиці немає.</div>{% endfor %}</div></section>
+{% endblock %}
